@@ -126,6 +126,20 @@ handle_image() {
     local DEFAULT_SIZE="1920x1080"
 
     local mimetype="${1}"
+    case "${FILE_EXTENSION_LOWER}" in
+        ## Blender file
+        blend)
+            ## You can tell blender to render a single frame and get a much better thumbnail.
+            ## The rendering engine can also be changed:
+            ## BLENDER_EEVEE - Rendering a frame is not fast but gives good result
+            ## BLENDER_WORKBENCH - Faster, but shaders are not supported
+            ## CYCLES - Rendering a frame will take more time but the thumbnail will be accurate to cycles
+            # blender -b "${FILE_PATH}" -o "${IMAGE_CACHE_PATH}-#.jpg" -F JPEG -E BLENDER_EEVEE -f 0 && \
+            #    mv "${IMAGE_CACHE_PATH}-0.jpg" "${IMAGE_CACHE_PATH}" && \
+            #    exit 6
+            blender-thumbnailer.py "${FILE_PATH}" "${IMAGE_CACHE_PATH}" && exit 6
+            exit 1;;
+    esac
     case "${mimetype}" in
         ## SVG
         # image/svg+xml|image/svg)
